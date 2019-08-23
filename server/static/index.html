@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-     <meta name=viewport content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1">
-       <link rel="stylesheet" href="./static/css/main.css" type="text/css" />
+    <meta name=viewport content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1">
+    <link rel="stylesheet" href="./static/css/main.css" type="text/css" />
 
     <script type="text/javascript" src="./static/js/jquery-1.11.1.min.js"></script>
-     <script type="text/javascript" src="./static/js/pageresponse.js"></script>
-     <script type="text/javascript" src="./static/js/main.js"></script>
+    <script type="text/javascript" src="./static/js/pageresponse.js"></script>
+    <script type="text/javascript" src="./static/js/main.js"></script>
 </head>
 <body>
 
@@ -36,12 +36,14 @@ var editors = []
 var request_in_progress = false
 
 function main() {
+    //create_editon 相当main函数，在此基础上调用其他相关的函数
   var create_editor = function(config) {
     var editor = new Editor(config)
     var elem = document.getElementById(config.name)
     elem.appendChild(editor.view.ctx.canvas)
     editors.push(editor)
   }
+  //create_editor.==>function
 
   create_editor({
     name: "edges2cats",
@@ -58,65 +60,69 @@ function main() {
     sheet_url: "/edges2cats-sheet.jpg",
   })
 
-  create_editor({
-    name: "edges2shoes",
-    weights_url: "/models/edges2shoes_AtoB.pict",
-    mode: "line",
-    clear: "#FFFFFF",
-    colors: {
-      line: "#000000",
-      eraser: "#ffffff",
-    },
-    draw: "#000000",
-    initial_input: "/edges2shoes-input.png",
-    initial_output: "/edges2shoes-output.png",
-    sheet_url: "/edges2shoes-sheet.jpg",
-  })
-
-  create_editor({
-    name: "edges2handbags",
-    weights_url: "/models/edges2handbags_AtoB.pict",
-    mode: "line",
-    clear: "#FFFFFF",
-    colors: {
-      line: "#000000",
-      eraser: "#ffffff",
-    },
-    draw: "#000000",
-    initial_input: "/edges2handbags-input.png",
-    initial_output: "/edges2handbags-output.png",
-    sheet_url: "/edges2handbags-sheet.jpg",
-  })
-
-  create_editor({
-    name: "facades",
-    weights_url: "/models/facades_BtoA.pict",
-    mode: "rect",
-    colors: {
-      background: "#0006d9",
-      wall: "#0d3dfb",
-      door: "#a50000",
-      "window": "#0075ff",
-      "window sill": "#68f898",
-      "window head": "#1dffdd",
-      shutter: "#eeed28",
-      balcony: "#b8ff38",
-      trim: "#ff9204",
-      cornice: "#ff4401",
-      column: "#f60001",
-      entrance: "#00c9ff",
-    },
-    clear: "#0d3dfb",
-    draw: "#0075ff",
-    initial_input: "/facades-input.png",
-    initial_output: "/facades-output.png",
-    sheet_url: "/facades-sheet.jpg",
-  })
-
   window.requestAnimationFrame(frame)
+        //在此新加入的函数
+  var mcanvas = document.getElementsByTagName("canvas");
+  var ctx=mcanvas.getContext("2d");
+      ctx.rotate(90*Math.PI/180);  //create_editor({
+  //  name: "edges2shoes",
+  //  weights_url: "/models/edges2shoes_AtoB.pict",
+  //  mode: "line",
+  //  clear: "#FFFFFF",
+  //  colors: {
+  //    line: "#000000",
+  //    eraser: "#ffffff",
+  //  },
+  //  draw: "#000000",
+  //  initial_input: "/edges2shoes-input.png",
+  //  initial_output: "/edges2shoes-output.png",
+  //  sheet_url: "/edges2shoes-sheet.jpg",
+  //})
+//
+  //create_editor({
+  //  name: "edges2handbags",
+  //  weights_url: "/models/edges2handbags_AtoB.pict",
+  //  mode: "line",
+  //  clear: "#FFFFFF",
+  //  colors: {
+  //    line: "#000000",
+  //    eraser: "#ffffff",
+  //  },
+  //  draw: "#000000",
+  //  initial_input: "/edges2handbags-input.png",
+  //  initial_output: "/edges2handbags-output.png",
+  //  sheet_url: "/edges2handbags-sheet.jpg",
+  //})
+//
+  //create_editor({
+  //  name: "facades",
+  //  weights_url: "/models/facades_BtoA.pict",
+  //  mode: "rect",
+  //  colors: {
+  //    background: "#0006d9",
+  //    wall: "#0d3dfb",
+  //    door: "#a50000",
+  //    "window": "#0075ff",
+  //    "window sill": "#68f898",
+  //    "window head": "#1dffdd",
+  //    shutter: "#eeed28",
+  //    balcony: "#b8ff38",
+  //    trim: "#ff9204",
+  //    cornice: "#ff4401",
+  //    column: "#f60001",
+  //    entrance: "#00c9ff",
+  //  },
+  //  clear: "#0d3dfb",
+  //  draw: "#0075ff",
+  //  initial_input: "/facades-input.png",
+  //  initial_output: "/facades-output.png",
+  //  sheet_url: "/facades-sheet.jpg",
+  //})
+
 }
 window.onload = main
 
+//渲染？？
 function render() {
   for (var i = 0; i < editors.length; i++) {
     editors[i].render()
@@ -125,6 +131,8 @@ function render() {
 // model
 
 var weights_cache = {}
+
+//获取权重———50m左右大小
 function fetch_weights(path, progress_cb) {
   return new Promise(function(resolve, reject) {
     if (path in weights_cache) {
@@ -187,7 +195,7 @@ function fetch_weights(path, progress_cb) {
     xhr.send(null)
   })
 }
-
+//神经网络模型定义等相关函数
 function model(input, weights) {
   const math = dl.ENV.math
 
@@ -270,10 +278,10 @@ function model(input, weights) {
   return deprocessed_output
 }
 
-// editor
+// canvas==>editor
 function Editor(config) {
   this.config = config
-  this.view = new View(this.config.name, 800, 400)     //设置edges2cats-->canvas的大小
+  this.view = new View(this.config.name, 750, 1500)     //设置edges2cats-->canvas的大小
   this.buffers = []
   this.buffer = createContext(SIZE, SIZE, SCALE)
   this.buffer.fillStyle = this.config.clear
@@ -356,6 +364,7 @@ Editor.prototype = {
               v.ctx.arcTo(side, 0, side, radius, radius)
               v.ctx.translate(side, 0)
               v.ctx.rotate(90 / 180 * Math.PI)
+                //画布旋转的相关函数
             }
             v.ctx.fillStyle = rgba([0.5, 0.5, 0.5, 1.0])
             v.ctx.stroke()
@@ -1042,6 +1051,5 @@ document.addEventListener("touchend", function(e) {
   update()
 })
 </script>
-
 </body>
 </html>

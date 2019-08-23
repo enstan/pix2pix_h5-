@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/../face_classification/flask-image-clipper-demo/.idea/flask-image-clipper-demo.iml" filepath="$PROJECT_DIR$/../face_classification/flask-image-clipper-demo/.idea/flask-image-clipper-demo.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/pix2pix-tensorflow-master.iml" filepath="$PROJECT_DIR$/.idea/pix2pix-tensorflow-master.iml" />
     </modules>
   </component>
